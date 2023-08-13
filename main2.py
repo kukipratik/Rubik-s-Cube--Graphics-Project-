@@ -1,10 +1,10 @@
 from ursina import *
 
-class Game():
+class Game(Entity):
     def __init__(self):
         super().__init__()
         app = Ursina()
-        window.fullscreen = True
+        window.fullscreen = False
         Entity(model='quad', scale=60, texture='white_cube', texture_scale=(60, 60), rotation_x=90, y=-5,
                color=color.light_gray)  # plane
         Entity(model='sphere', scale=100,
@@ -16,11 +16,16 @@ class Game():
         app.run()
         
     def load_game(self):
-        Entity(model= self.model, texture= self.texture)
+        self.PARENT = Entity(model= 'cube', texture = "textures/sky0")
+        Entity(parent= self.PARENT, model= self.model, texture= self.texture, position = (-1,1,1))
+        self.rot = 0
 
     def input(self, key):
-        super().input(key)
-
+        if key == "left mouse down":
+            print("clicked left")
+            self.rot += 90
+            self.PARENT.animate_rotation_x(self.rot, duration=0.5) 
+    
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    # game.run()
