@@ -27,8 +27,13 @@ class Game(Entity):
                                      'RIGHT': self.RIGHT, 'FACE': self.FACE,
                                      'BACK': self.BACK, 'TOP': self.TOP}
         self.animation_time = 0.5
+        self.action_trigger = True
+    
+    def toggle_animation_trigger(self):
+        self.action_trigger = not self.action_trigger
 
     def rotate_side(self, side_name):
+        self.action_trigger = False
         cube_positions = self.cubes_side_positions[side_name]
         rotation_axis = self.rotation_axes[side_name]
         self.reparent_to_scene()
@@ -37,6 +42,7 @@ class Game(Entity):
                 cube.parent = self.PARENT
                 eval(
                     f'self.PARENT.animate_rotation_{rotation_axis}(90, duration=self.animation_time)')
+        invoke(self.toggle_animation_trigger, delay=self.animation_time + 0.11)
 
     def reparent_to_scene(self):
         for cube in self.CUBES:
@@ -66,7 +72,7 @@ class Game(Entity):
         # if key == 's':
         #     self.rotate_side('BOTTOM')
         keys = dict(zip('asdwqe', 'LEFT BOTTOM RIGHT TOP FACE BACK'.split()))
-        if key in keys:
+        if key in keys and self.action_trigger:
             self.rotate_side(keys[key])
 
         if key == "left mouse down":
