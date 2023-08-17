@@ -1,55 +1,55 @@
 from ursina import *
 
 
-class Game():
+class Game(Entity):
     def __init__(self):
+        super().__init__()
         app = Ursina()
-        window.fullscreen = True
+        window.fullscreen = False
         Entity(model='quad', scale=60, texture='white_cube', texture_scale=(60, 60), rotation_x=90, y=-5,
                color=color.light_gray)  # plane
         Entity(model='sphere', scale=100,
                texture='textures/sky0', double_sided=True)  # sky
         EditorCamera()
         camera.world_position = (0, 0, -15)
-        self.model, self.texture = 'models/custom_cube', 'textures/rubik_texture'
+        self.cube_model, self.cube_texture = 'models/custom_cube', 'textures/rubik_texture'
         self.load_game()
         app.run()
 
     def load_game(self):
         self.create_cube_positions()
-        self.CUBES = [Entity(model=self.model, texture=self.texture,
+        self.CUBES = [Entity(model=self.cube_model, texture=self.cube_texture,
                              position=pos) for pos in self.SIDE_POSITIONS]
         self.PARENT = Entity()
-        self.rotation_axes = {'LEFT': 'x', 'RIGHT': 'x',
+        self.rotation_axes = {"LEFT": "x", "RIGHT": "x",
                               'TOP': 'y', 'BOTTOM': 'y', 'FACE': 'z', 'BACK': 'z'}
-        self.cubes_side_positons = {'LEFT': self.LEFT, 'BOTTOM': self.BOTTOM, 'RIGHT': self.RIGHT, 'FACE': self.FACE,
-                                    'BACK': self.BACK, 'TOP': self.TOP}
+        self.cubes_side_positions = {'LEFT': self.LEFT, 'BOTTOM': self.BOTTOM,
+                                     'RIGHT': self.RIGHT, 'FACE': self.FACE,
+                                     'BACK': self.BACK, 'TOP': self.TOP}
         self.animation_time = 0.5
         self.action_trigger = True
         self.action_mode = True
         self.message = Text(origin=(0, 19), color=color.black)
         self.toggle_game_mode()
         self.create_sensors()
-        # initial state of the cube, rotations - number of side turns
-        self.random_state(rotations=3)
+        self.random_state()
 
-    def random_state(self, rotations=3):
-        [self.rotate_side_without_animation(random.choice(
-            list(self.rotation_axes))) for i in range(rotations)]
+    def random_state(self, rotations = 3):
+        [self.rotate_side_without_animation(random.choice(list(self.rotation_axes))) for i in range(rotations)]
 
     def rotate_side_without_animation(self, side_name):
-        cube_positions = self.cubes_side_positons[side_name]
+        cube_positions = self.cubes_side_positions[side_name]
         rotation_axis = self.rotation_axes[side_name]
         self.reparent_to_scene()
         for cube in self.CUBES:
             if cube.position in cube_positions:
-                cube.parent = self.PARENT
-                exec(f'self.PARENT.rotation_{rotation_axis} = 90')
+                cube.parent= self.PARENT
+                exec(f'self.PARENT.rotation_{rotation_axis} =  90')
 
     def create_sensors(self):
-        '''detectors for each side, for detecting collisions with mouse clicks'''
-        def create_sensor(name, pos, scale): return Entity(name=name, position=pos, model='cube', color=color.dark_gray,
-                                                           scale=scale, collider='box', visible=False)
+        def create_sensor(name, pos, scale): 
+            return Entity(name=name, position=pos, model='cube', color=color.dark_gray, scale=scale,   collider='box', visible=False)
+
         self.LEFT_sensor = create_sensor(
             name='LEFT', pos=(-0.99, 0, 0), scale=(1.01, 3.01, 3.01))
         self.FACE_sensor = create_sensor(
@@ -64,19 +64,17 @@ class Game():
             name='BOTTOM', pos=(0, -1, 0), scale=(3.01, 1.01, 3.01))
 
     def toggle_game_mode(self):
-        '''switching view mode or interacting with Rubik's cube'''
         self.action_mode = not self.action_mode
         msg = dedent(f"{'ACTION mode ON' if self.action_mode else 'VIEW mode ON'}"
-                     f" (to switch - press middle mouse button)").strip()
+                     f"(to switch - press middle mouse button)").strip()
         self.message.text = msg
 
     def toggle_animation_trigger(self):
-        '''prohibiting side rotation during rotation animation'''
         self.action_trigger = not self.action_trigger
 
     def rotate_side(self, side_name):
         self.action_trigger = False
-        cube_positions = self.cubes_side_positons[side_name]
+        cube_positions = self.cubes_side_positions[side_name]
         rotation_axis = self.rotation_axes[side_name]
         self.reparent_to_scene()
         for cube in self.CUBES:
@@ -109,18 +107,30 @@ class Game():
         self.SIDE_POSITIONS = self.LEFT | self.BOTTOM | self.FACE | self.BACK | self.RIGHT | self.TOP
 
     def input(self, key):
-        if key in 'mouse1 mouse3' and self.action_mode and self.action_trigger:
+        mouse_right_click = 'right mouse down'
+        mouse_middle_click = 'middle mouse down'
+        mouse_left_click = 'left mouse down'
+        # if key == 'a':
+        #     self.rotate_side('LEFT')
+        # if key == 's':
+        #     self.rotate_side('BOTTOM')
+        
+        if key in  f'{mouse_left_click} {mouse_right_click}' and self.action_mode and self.action_trigger:
+            # print("got here 1 ",  key)
             for hitinfo in mouse.collisions:
+                # print("got here 2 ",  hitinfo)
                 collider_name = hitinfo.entity.name
-                if (key == 'mouse1' and collider_name in 'LEFT RIGHT FACE BACK' or
-                        key == 'mouse3' and collider_name in 'TOP BOTTOM'):
+                # print("collider  nname ",  collider_name)
+                if(key == mouse_left_click and collider_name in 'LEFT RIGHT FACE BACK' or
+                   key == mouse_right_click and collider_name in 'TOP BOTTOM'):
                     self.rotate_side(collider_name)
                     break
-        if key == 'mouse2':
+
+        if key == mouse_middle_click or key == 'v':
+            # print("middle mouse left")
             self.toggle_game_mode()
-        super().input(key)
 
 
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    # game.run()
