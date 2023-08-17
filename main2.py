@@ -29,15 +29,33 @@ class Game(Entity):
         self.animation_time = 0.5
         self.action_trigger = True
         self.action_mode = True
-        self.message = Text(origin=(0,19), color=color.black)
+        self.message = Text(origin=(0, 19), color=color.black)
         self.toggle_game_mode()
-    
+        self.create_sensors()
+
+    def create_sensors(self):
+        def create_sensor(name, pos, scale): return Entity(name=name, position=pos,
+                                                           model='cube', color=color.dark_gray, scale=scale, collider='box', visible=False)
+
+        self.LEFT_sensor = create_sensor(
+            name='LEFT', pos=(-0.99, 0, 0), scale=(1.01, 3.01, 3.01))
+        self.FACE_sensor = create_sensor(
+            name='FACE', pos=(0, 0, -0.99), scale=(3.01, 3.01, 1.01))
+        self.BACK_sensor = create_sensor(
+            name='BACK', pos=(0, 0, 0.99), scale=(3.01, 3.01, 1.01))
+        self.RIGHT_sensor = create_sensor(
+            name='RIGHT', pos=(0.99, 0, 0), scale=(1.01, 3.01, 3.01))
+        self.TOP_sensor = create_sensor(
+            name='TOP', pos=(0, 1, 0), scale=(3.01, 1.01, 3.01))
+        self.BOTTOM_sensor = create_sensor(
+            name='BOTTOM', pos=(0, -1, 0), scale=(3.01, 1.01, 3.01))
+
     def toggle_game_mode(self):
         self.action_mode = not self.action_mode
         msg = dedent(f"{'ACTION mode ON' if self.action_mode else 'VIEW mode ON'}"
                      f"(to switch - press middle mouse button)").strip()
         self.message.text = msg
-    
+
     def toggle_animation_trigger(self):
         self.action_trigger = not self.action_trigger
 
@@ -76,22 +94,24 @@ class Game(Entity):
         self.SIDE_POSITIONS = self.LEFT | self.BOTTOM | self.FACE | self.BACK | self.RIGHT | self.TOP
 
     def input(self, key):
+        mouse_right_click = 'right mouse down'
+        mouse_middle_click = 'middle mouse down'
+        mouse_left_click = 'left mouse down'
         # if key == 'a':
         #     self.rotate_side('LEFT')
         # if key == 's':
         #     self.rotate_side('BOTTOM')
-        keys = dict(zip('asdwqe', 'LEFT BOTTOM RIGHT TOP FACE BACK'.split()))
-        if key in keys and self.action_trigger:
-            self.rotate_side(keys[key])
+        
+        if key in f'{mouse_left_click} {mouse_right_click}' and self.action_mode and self.action_trigger:
+            for hitinfo in mouse.collisions:
+                collider_name = hitinfo.entity.name
+                if(key == mouse_left_click and collider_name in 'LEFT RIGHT FACE BACK' or
+                   key == mouse_right_click and collider_name in 'TOP BOTTOM'):
+                    break
 
-        if key == "left mouse down":
-            print("clicked left")
-
-        if key == "middle mouse down":
+        if key == mouse_middle_click:
             print("middle mouse left")
             self.toggle_game_mode()
-        #     self.rot += 90
-        #     self.PARENT.animate_rotation_x(self.rot, duration=0.5)
 
 
 if __name__ == '__main__':
