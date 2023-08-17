@@ -1,21 +1,43 @@
 from ursina import *
 
+class InputHandler:
+    def __init__(self, game):
+        self.game = game
+
+    def input(self, key):
+        print("got here")
+        mouse_right_click = 'right mouse down'
+        mouse_middle_click = 'middle mouse down'
+        mouse_left_click = 'left mouse down'
+        
+        if key in f'{mouse_left_click} {mouse_right_click}' and self.game.action_mode and self.game.action_trigger:
+            for hitinfo in mouse.collisions:
+                collider_name = hitinfo.entity.name
+                if (key == mouse_left_click and collider_name in 'LEFT RIGHT FACE BACK' or
+                    key == mouse_right_click and collider_name in 'TOP BOTTOM'):
+                    self.game.rotate_side(collider_name)
+                    break
+
+        if key == mouse_middle_click or key == 'v':
+            self.game.toggle_game_mode()
+
 class Game(Entity):
     def __init__(self):
         super().__init__()
-        self.initialize_surroundings()
-        self.cube_model, self.cube_texture = 'models/custom_cube', 'textures/rubik_texture'
-        self.load_game()
-
-    def initialize_surroundings(self):
-        Entity(model='quad', scale=60, texture='white_cube', texture_scale=(60, 60), rotation_x=90, y=-5, color=color.light_gray)  # plane
+        # app = Ursina()
+        window.fullscreen = False
+        Entity(model='quad', scale=60, texture='white_cube', texture_scale=(60, 60), rotation_x=90, y=-5,
+               color=color.light_gray)  # plane
         Entity(model='sphere', scale=100,
                texture='textures/sky0', double_sided=True)  # sky
-        camera = EditorCamera()
-        camera.world_position = (0, 0, -5)
+        EditorCamera()
+        camera.world_position = (0, 0, -15)
+        self.cube_model, self.cube_texture = 'models/custom_cube', 'textures/rubik_texture'
+        self.load_game()
+        self.input_handler = InputHandler(self)
+        # app.run()
 
     def load_game(self):
-        #cubes things here
         self.create_cube_positions()
         self.CUBES = [Entity(model=self.cube_model, texture=self.cube_texture,
                              position=pos) for pos in self.SIDE_POSITIONS]
@@ -25,19 +47,13 @@ class Game(Entity):
         self.cubes_side_positions = {'LEFT': self.LEFT, 'BOTTOM': self.BOTTOM,
                                      'RIGHT': self.RIGHT, 'FACE': self.FACE,
                                      'BACK': self.BACK, 'TOP': self.TOP}
-        self.random_state()
-        
-        #some cube actions
         self.animation_time = 0.5
         self.action_trigger = True
         self.action_mode = True
-     
-        #add sensor to cube
-        self.create_sensors()
-
-        #display message
         self.message = Text(origin=(0, 19), color=color.black)
         self.toggle_game_mode()
+        self.create_sensors()
+        self.random_state()
 
     def random_state(self, rotations = 3):
         [self.rotate_side_without_animation(random.choice(list(self.rotation_axes))) for i in range(rotations)]
@@ -112,24 +128,9 @@ class Game(Entity):
         self.SIDE_POSITIONS = self.LEFT | self.BOTTOM | self.FACE | self.BACK | self.RIGHT | self.TOP
 
     def input(self, key):
-        mouse_right_click = 'right mouse down'
-        mouse_middle_click = 'middle mouse down'
-        mouse_left_click = 'left mouse down'
-        
-        if key in  f'{mouse_left_click} {mouse_right_click}' and self.action_mode and self.action_trigger:
-            for hitinfo in mouse.collisions:
-                collider_name = hitinfo.entity.name
-                if(key == mouse_left_click and collider_name in 'LEFT RIGHT FACE BACK' or
-                   key == mouse_right_click and collider_name in 'TOP BOTTOM'):
-                    self.rotate_side(collider_name)
-                    break
-
-        if key == mouse_middle_click or key == 'v':
-            self.toggle_game_mode()
-
+        self.input_handler.input(key)
 
 if __name__ == '__main__':
     app = Ursina()
-    window.fullscreen = False
     game = Game()
     app.run()
