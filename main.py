@@ -110,27 +110,18 @@ class Game(Entity):
         mouse_right_click = 'right mouse down'
         mouse_middle_click = 'middle mouse down'
         mouse_left_click = 'left mouse down'
-        # if key == 'a':
-        #     self.rotate_side('LEFT')
-        # if key == 's':
-        #     self.rotate_side('BOTTOM')
         
         if key in  f'{mouse_left_click} {mouse_right_click}' and self.action_mode and self.action_trigger:
-            # print("got here 1 ",  key)
             for hitinfo in mouse.collisions:
-                # print("got here 2 ",  hitinfo)
                 collider_name = hitinfo.entity.name
-                # print("collider  nname ",  collider_name)
                 if(key == mouse_left_click and collider_name in 'LEFT RIGHT FACE BACK' or
                    key == mouse_right_click and collider_name in 'TOP BOTTOM'):
                     self.rotate_side(collider_name)
                     break
 
         if key == mouse_middle_click or key == 'v':
-            # print("middle mouse left")
             self.toggle_game_mode()
 
 
 if __name__ == '__main__':
     game = Game()
-    # game.run()
