@@ -28,6 +28,14 @@ class Game(Entity):
                                      'BACK': self.BACK, 'TOP': self.TOP}
         self.animation_time = 0.5
         self.action_trigger = True
+        self.action_mode = True
+        self.message = Text(origin=(0,19), color=color.black)
+        self.toogle_game_mode()
+    
+    def toogle_game_mode(self):
+        self.action_mode = not self.action_mode
+        msg = dedent(f"{'ACTION mode ON' if self.action_mode else 'VIEW mode ON'}"
+                     f"(to switch - press middle mouse button)").strip()
     
     def toggle_animation_trigger(self):
         self.action_trigger = not self.action_trigger
@@ -77,6 +85,9 @@ class Game(Entity):
 
         if key == "left mouse down":
             print("clicked left")
+
+        if key == "mouse2":
+            print("middle mouse left")
         #     self.rot += 90
         #     self.PARENT.animate_rotation_x(self.rot, duration=0.5)
 
