@@ -1,6 +1,5 @@
 from ursina import *
 
-
 class Game(Entity):
     def __init__(self):
         super().__init__()
@@ -17,6 +16,7 @@ class Game(Entity):
         app.run()
 
     def load_game(self):
+        #cubes things here
         self.create_cube_positions()
         self.CUBES = [Entity(model=self.cube_model, texture=self.cube_texture,
                              position=pos) for pos in self.SIDE_POSITIONS]
@@ -26,13 +26,19 @@ class Game(Entity):
         self.cubes_side_positions = {'LEFT': self.LEFT, 'BOTTOM': self.BOTTOM,
                                      'RIGHT': self.RIGHT, 'FACE': self.FACE,
                                      'BACK': self.BACK, 'TOP': self.TOP}
+        self.random_state()
+        
+        #some cube actions
         self.animation_time = 0.5
         self.action_trigger = True
         self.action_mode = True
+     
+        #add sensor to cube
+        self.create_sensors()
+
+        #display message
         self.message = Text(origin=(0, 19), color=color.black)
         self.toggle_game_mode()
-        self.create_sensors()
-        self.random_state()
 
     def random_state(self, rotations = 3):
         [self.rotate_side_without_animation(random.choice(list(self.rotation_axes))) for i in range(rotations)]
