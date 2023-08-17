@@ -32,10 +32,23 @@ class Game(Entity):
         self.message = Text(origin=(0, 19), color=color.black)
         self.toggle_game_mode()
         self.create_sensors()
+        self.random_state()
+
+    def random_state(self, rotations = 3):
+        [self.rotate_side_without_animation(random.choice(list(self.rotation_axes))) for i in range(rotations)]
+
+    def rotate_side_without_animation(self, side_name):
+        cube_positions = self.cubes_side_positions[side_name]
+        rotation_axis = self.rotation_axes[side_name]
+        self.reparent_to_scene()
+        for cube in self.CUBES:
+            if cube.position in cube_positions:
+                cube.parent= self.PARENT
+                exec(f'self.PARENT.rotation_{rotation_axis} =  90')
 
     def create_sensors(self):
-        def create_sensor(name, pos, scale): return Entity(name=name, position=pos,
-                                                           model='cube', color=color.dark_gray, scale=scale, collider='box', visible=False)
+        def create_sensor(name, pos, scale): 
+            return Entity(name=name, position=pos, model='cube', color=color.dark_gray, scale=scale,   collider='box', visible=False)
 
         self.LEFT_sensor = create_sensor(
             name='LEFT', pos=(-0.99, 0, 0), scale=(1.01, 3.01, 3.01))
@@ -113,7 +126,7 @@ class Game(Entity):
                     self.rotate_side(collider_name)
                     break
 
-        if key == mouse_middle_click:
+        if key == mouse_middle_click or key == 'v':
             # print("middle mouse left")
             self.toggle_game_mode()
 
