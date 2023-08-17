@@ -1,5 +1,6 @@
 from ursina import *
 
+
 class Game():
     def __init__(self):
         app = Ursina()
@@ -118,6 +119,7 @@ class Game():
         if key == 'mouse2':
             self.toggle_game_mode()
         super().input(key)
+
 
 if __name__ == '__main__':
     game = Game()
