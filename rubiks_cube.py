@@ -45,6 +45,7 @@ class RubiksCube(Entity):
                 cube.parent = self.PARENT
                 exec(f'self.PARENT.rotation_{rotation_axis} =  90')
 
+    #don't remove animation_time from props (it is being used actually)
     def rotate_side(self, side_name, animation_time):
         cube_positions = self.cubes_side_positions[side_name]
         rotation_axis = self.rotation_axes[side_name]
