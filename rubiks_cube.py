@@ -40,6 +40,8 @@ class RubiksCube(Entity):
         def create_sensor(name, pos, scale):
             return Entity(name=name, position=pos, model='cube', color=color.dark_gray, scale=scale,   collider='box', visible=False)
 
+        # self.LEFT_sensor = Entity(name="LEFT", position=(-0.99, 0, 0), model='cube', color=color.dark_gray, scale=(1.01, 3.01, 3.01),   collider='box', visible=True)
+        # self.FACE_sensor = Entity(name="FACE", position=(0, 0, -0.99), model='cube', color=color.red, scale=(3.01, 3.01, 1.01),   collider='box', visible=True)
         self.LEFT_sensor = create_sensor(
             name='LEFT', pos=(-0.99, 0, 0), scale=(1.01, 3.01, 3.01))
         self.FACE_sensor = create_sensor(
