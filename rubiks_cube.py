@@ -40,8 +40,6 @@ class RubiksCube(Entity):
         def create_sensor(name, pos, scale):
             return Entity(name=name, position=pos, model='cube', color=color.dark_gray, scale=scale,   collider='box', visible=False)
 
-        # self.LEFT_sensor = Entity(name="LEFT", position=(-0.99, 0, 0), model='cube', color=color.dark_gray, scale=(1.01, 3.01, 3.01),   collider='box', visible=True)
-        # self.FACE_sensor = Entity(name="FACE", position=(0, 0, -0.99), model='cube', color=color.red, scale=(3.01, 3.01, 1.01),   collider='box', visible=True)
         self.LEFT_sensor = create_sensor(
             name='LEFT', pos=(-0.99, 0, 0), scale=(1.01, 3.01, 3.01))
         self.FACE_sensor = create_sensor(
@@ -69,7 +67,7 @@ class RubiksCube(Entity):
                 exec(f'self.PARENT.rotation_{rotation_axis} =  90')
 
     # don't remove animation_time from props (it is being used actually)
-    def rotate_side(self, side_name, animation_time):
+    def rotate_side(self, side_name, animation_time, angle):
         cube_positions = self.cubes_side_positions[side_name]
         rotation_axis = self.rotation_axes[side_name]
         self.reparent_to_scene()
@@ -77,7 +75,7 @@ class RubiksCube(Entity):
             if cube.position in cube_positions:
                 cube.parent = self.PARENT
                 eval(
-                    f'self.PARENT.animate_rotation_{rotation_axis}(90, duration=animation_time)')
+                    f'self.PARENT.animate_rotation_{rotation_axis}({angle}, duration=animation_time)')
 
     def reparent_to_scene(self):
         for cube in self.CUBES:
