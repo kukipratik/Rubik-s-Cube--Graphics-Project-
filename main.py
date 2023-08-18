@@ -4,10 +4,30 @@ from input_handler import InputHandler
 from ursina.shaders import lit_with_shadows_shader
 
 
-class Game(Entity):
+class GameController(Entity):
+    def __init__(self):
+        super().__init__()
+        self.app = Ursina()
+        window.fullscreen = False
+        self.day_time = True
+        print("hello. I got called here")
+    
+    def toogle_day_time(self):
+        self.day_time = not self.day_time
+        self.app.restart()
+    
+    def get_day_time(self):
+        return self.day_time
+
+    def run(self):
+        self.app.run()
+
+
+class Game(GameController):
     def __init__(self):
         super().__init__()
         self.load_game()
+        self.run()
 
     def load_game(self):
         self.rubiks_cube = RubiksCube()
@@ -28,9 +48,6 @@ class Game(Entity):
     def input(self, key):
         self.input_handler.handleInputs(key)
 
-
+    
 if __name__ == '__main__':
-    app = Ursina()
-    window.fullscreen = False
-    game = Game()
-    app.run()
+    Game()
