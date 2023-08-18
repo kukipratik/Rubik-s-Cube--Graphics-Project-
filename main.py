@@ -5,10 +5,13 @@ from input_handler import InputHandler
 class Game(Entity):
     def __init__(self):
         super().__init__()
+        self.load_game()
+
+    def load_game(self):
         self.rubiks_cube = RubiksCube()
+        self.rubiks_cube.create_rubiks_cube()
         self.input_handler = InputHandler(rubiks_cube=self.rubiks_cube)
         self.initialize_surroundings()
-        self.load_game()
 
     def initialize_surroundings(self):
         Entity(model='quad', scale=60, texture='white_cube', texture_scale=(
@@ -17,9 +20,6 @@ class Game(Entity):
                texture='textures/sky0', double_sided=True)  # sky
         camera = EditorCamera()
         camera.world_position = (0, 0, -5)
-
-    def load_game(self):
-        self.rubiks_cube.create_rubiks_cube()
 
     def input(self, key):
         self.input_handler.handleInputs(key)
