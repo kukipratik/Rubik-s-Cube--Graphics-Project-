@@ -19,7 +19,7 @@ class InputHandler:
     def toggle_game_mode(self):
         self.action_mode = not self.action_mode
         msg = dedent(f"{'ACTION mode ON' if self.action_mode else 'VIEW mode ON'}"
-                     f"(to switch - press 'middle mouse button' or 'v')").strip()
+                     f"(to switch - press button 'v')").strip()
         self.message.text = msg
 
     def toggle_animation_trigger(self):
@@ -36,6 +36,6 @@ class InputHandler:
                     invoke(self.toggle_animation_trigger, delay=self.animation_time + 0.11)
                     break
 
-        if key == self.mouse_middle_click or key == 'v':
+        if key == 'v':
             self.toggle_game_mode()
 
