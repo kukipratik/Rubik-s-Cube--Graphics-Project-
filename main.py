@@ -1,6 +1,7 @@
 from ursina import *
 from rubiks_cube import RubiksCube
 from input_handler import InputHandler
+from ursina.shaders import lit_with_shadows_shader
 
 
 class Game(Entity):
@@ -15,12 +16,14 @@ class Game(Entity):
         self.initialize_surroundings()
 
     def initialize_surroundings(self):
-        Entity(model='quad', scale=60, texture='white_cube', texture_scale=(
-            60, 60), rotation_x=90, y=-5, color=color.light_gray)  # plane
-        Entity(model='sphere', scale=100,
-               texture='textures/sky0', double_sided=True)  # sky
         camera = EditorCamera()
         camera.world_position = (0, 0, -5)
+        DirectionalLight(parent=camera, y=-1, z=-3,
+                         shadows=True, rotation=(45, -45, 45))
+        Entity(model='quad', scale=60, texture='white_cube', texture_scale=(
+            60, 60), rotation_x=90, y=-5, color=color.light_gray, shader=lit_with_shadows_shader)  # plane
+        Entity(model='sphere', scale=100,
+               texture='textures/sky0', double_sided=True)  # sky
 
     def input(self, key):
         self.input_handler.handleInputs(key)

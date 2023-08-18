@@ -1,4 +1,5 @@
 from ursina import *
+from ursina.shaders import lit_with_shadows_shader
 
 
 class RubiksCube(Entity):
@@ -9,7 +10,7 @@ class RubiksCube(Entity):
     def create_rubiks_cube(self):
         self.cube_model, self.cube_texture = 'models/custom_cube', 'textures/rubik_texture'
         self.CUBES = [Entity(model=self.cube_model, texture=self.cube_texture,
-                             position=pos) for pos in self.SIDE_POSITIONS]
+                             position=pos, shader=lit_with_shadows_shader) for pos in self.SIDE_POSITIONS]
         self.PARENT = Entity()
         self.rotation_axes = {"LEFT": "x", "RIGHT": "x",
                               'TOP': 'y', 'BOTTOM': 'y', 'FACE': 'z', 'BACK': 'z'}
