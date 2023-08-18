@@ -2,6 +2,7 @@ from ursina import *
 from rubiks_cube import RubiksCube
 from input_handler import InputHandler
 
+
 class Game(Entity):
     def __init__(self):
         super().__init__()
