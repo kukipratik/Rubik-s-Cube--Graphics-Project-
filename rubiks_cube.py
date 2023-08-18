@@ -35,7 +35,7 @@ class RubiksCube(Entity):
         self.SIDE_POSITIONS = self.LEFT | self.BOTTOM | self.FACE | self.BACK | self.RIGHT | self.TOP
         # print("left face = ", self.LEFT)
         # print("top face = ", self.TOP)
-        print("all face = ", self.SIDE_POSITIONS)
+        # print("all face = ", self.SIDE_POSITIONS)
 
     def create_sensors(self):
         def create_sensor(name, pos, scale):
