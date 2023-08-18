@@ -23,18 +23,18 @@ class Game(Entity):
         # print("nignt")
         self.camera = EditorCamera()
         self.camera.world_position = (0, 0, -5)
-        self.light = DirectionalLight(parent=camera, y=-1, z=-3,
+        self.light = AmbientLight(parent=camera, y=-1, z=-3,
                                       shadows=True, rotation=(45, -45, 45))
-        self.ground = Entity(model='quad', scale=60, texture='white_cube', texture_scale=(
-            60, 60), rotation_x=90, y=-5, color=color.light_gray, shader=lit_with_shadows_shader)  # plane
+        self.ground = Entity(model='quad', scale=60, texture='textures/ground2', texture_scale=(
+            60, 60), rotation_x=90, y=-5, color=color.dark_gray, shader=lit_with_shadows_shader)  # plane
         self.sky = Entity(model='sphere', scale=100,
-                          texture='textures/sky0', double_sided=True)  # sky
+                          texture='textures/black', double_sided=True)  # sky
 
     def initialize_surroundings_for_day_time(self):
         # print("day")
         self.camera = EditorCamera()
         self.camera.world_position = (0, 0, -5)
-        self.ground = Entity(model='quad', scale=60, texture='white_cube', texture_scale=(
+        self.ground = Entity(model='quad', scale=60, texture='textures/ground1', texture_scale=(
             60, 60), rotation_x=90, y=-5, color=color.light_gray, shader=lit_with_shadows_shader)  # plane
         self.sky = Entity(model='sphere', scale=100,
                           texture='textures/sky0', double_sided=True)  # sky
